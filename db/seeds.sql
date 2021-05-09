@@ -38,8 +38,8 @@ VALUES
     ('Hauke','Kynaston', 9, NULL),
     ('Bettina','Denis', 13, NULL),
     ('Lavrentios','Hailey', 16, NULL),
-    ('Rochus','Rothenberg', 18, 8),
     ('Zvezdana',"O'Donnell", 19, NULL),
+    ('Rochus','Rothenberg', 18, NULL),
     ('Dana','Beaumont', 1, 1),
     ('Garth','Martinović', 1, 1),
     ('Alina','Huber', 1, 1),
@@ -86,12 +86,12 @@ VALUES
     ('Irene', 'Mac Cnaimhin', 15, 6),
     ('Zorana', 'Leccese', 15, 6),
     ('Pamella', 'Bagley', 15, 6),
-    ('Alberte', 'Garrett', 17, 7),
-    ('Kunigunde', 'Kruger', 17, 7),
-    ('Sanford', 'Cary', 17, 7),
-    ('Humphry', 'Mari', 17, 7),
-    ('Cyrille', 'Akerman', 17, 7),
-    ('Lettice', 'Garrett', 17, 7);
+    ('Alberte', 'Garrett', 17, 8),
+    ('Kunigunde', 'Kruger', 17, 8),
+    ('Sanford', 'Cary', 17, 8),
+    ('Humphry', 'Mari', 17, 8),
+    ('Cyrille', 'Akerman', 17, 8),
+    ('Lettice', 'Garrett', 17, 8);
 
     
 
