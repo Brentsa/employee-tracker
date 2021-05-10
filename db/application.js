@@ -15,8 +15,8 @@ class Application{
         };
     }
 
-    runApplication(){
-        
+    runApplication()
+    {
         inquirer
         .prompt(this.mainMenuQuestion)
         .then(({selection}) => {
@@ -24,7 +24,8 @@ class Application{
         });
     }
 
-    displayResults(selection){
+    displayResults(selection)
+    {
         switch(selection){
             case "View all departments":
                 console.log(1);
