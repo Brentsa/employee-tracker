@@ -16,6 +16,21 @@ class Application{
             message: "What would you like to do?",
             choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update an employee role", "Exit"]
         };
+
+        //The question object for adding a department
+        this.addDepartmentQuestion = {
+            type: "input",
+            name: "departmentName",
+            message: "Enter a department name:",
+            validate: departmentName => {
+                if(typeof departmentName == "string" && departmentName.length > 0){
+                    return true;
+                }
+                else{
+                    return "Please enter a valid department name.";
+                }
+            }
+        };
     }
 
     //execute this function to begin the app and start the interation loop
@@ -33,6 +48,7 @@ class Application{
     displayResults(selection)
     {
         //Determine what the app should do based on the respose from inquirer
+        //Returns a promise for modularity unless exiting at which point we'll terminate the db connection and end the app
         switch(selection){
             case "View all departments":
                 return this.displayAllDepartments();
@@ -44,10 +60,8 @@ class Application{
                 return this.displayAllEmployees();
     
             case "Add a department":
-                console.log(4);
-                this.runApplication();
-                break;
-            
+                return this.promptAddDepartment();
+                
             case "Add a role":
                 console.log(5);
                 this.runApplication();
@@ -141,6 +155,32 @@ class Application{
 
     //WHEN I choose to add a department
     //THEN I am prompted to enter the name of the department and that department is added to the database
+    promptAddDepartment(){
+        return inquirer
+        .prompt(this.addDepartmentQuestion)
+        .then(answer => {
+            const sql = "INSERT INTO departments (name) VALUES (?)";
+            const param = [answer.departmentName];
+
+            return this.db.promise().query(sql, param);
+        })
+        .then(result => {
+            if(!result[0].affectedRows){
+                console.log("Department not added");
+            }
+            else{
+                console.log("Department added successfully");
+            }
+
+            //Run application after the department query
+            this.runApplication();
+        })
+        .catch( err => {
+            //catch the error, display the error message and restart the loop
+            console.log(`\nError: ${err.message}\n`);
+            this.runApplication();
+        });
+    }
 
     //WHEN I choose to add an employee
     //THEN I am prompted to enter the employee’s first name, last name, role, and manager and that employee is added to the database
