@@ -45,26 +45,23 @@ class Application{
                 return this.promptAddDepartment();
                 
             case "Add a role":
-                console.log(5);
-                this.runApplication();
-                break;
+                return this.promptAddRole();
             
             case "Add an employee":
                 return this.promptAddEmployee();
             
             case "Update an employee role":
-                return this.updateEmployeeRole();
+                return this.promptUpdateEmployeeRole();
     
             case "Exit":
+                //Terminate connection and exit the app.
                 console.log("\nThanks and take care!");
                 this.db.end();
                 break;
         }
     }
 
-    //WHEN I choose to view all departments
-    //THEN I am presented with a formatted table showing department names and department ids
-    //Returns a promise that displays all departments in a table
+    //Present user with a formatted table showing department names and department ids
     displayAllDepartments(){
         const sql = "SELECT * FROM departments";
                 
@@ -85,11 +82,11 @@ class Application{
         });
     }
 
-    //WHEN I choose to view all roles
-    //THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
-    //Returns a promise that displays all roles in a table
+    //Present user with the job title, role id, the department that role belongs to, and the salary for that role
     displayAllRoles(){
-        const sql = "SELECT * FROM roles";
+        const sql =`SELECT roles.title, roles.salary, departments.name AS department
+                    FROM roles
+                    JOIN departments ON roles.department_id = departments.id`;
                 
         return this.db.promise().query(sql)
         .then( ([rows]) => {
@@ -108,9 +105,7 @@ class Application{
         });
     }
 
-    //WHEN I choose to view all employees
-    //THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-    //Returns a promise that displays all employees in a table
+    //Present user with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
     displayAllEmployees(){
         const sql =`SELECT A.id, CONCAT(A.first_name,' ', A.last_name) AS name, roles.title, roles.salary, departments.name AS department, COALESCE(CONCAT(B.first_name, ' ', B.last_name), '') AS manager
                     FROM employees A
@@ -136,8 +131,7 @@ class Application{
         });
     }
 
-    //WHEN I choose to add a department
-    //THEN I am prompted to enter the name of the department and that department is added to the database
+    //Prompt user to enter the name of the department and that department is added to the database
     promptAddDepartment(){
         return inquirer.prompt({
             type: "input",
@@ -172,8 +166,7 @@ class Application{
         });
     }
 
-    //WHEN I choose to add an employee
-    //THEN I am prompted to enter the employee’s first name, last name, role, and manager and that employee is added to the database
+    //Prompt user to enter the employee’s first name, last name, role, and manager and that employee is added to the database
     promptAddEmployee(){
         const rolesSql = 'SELECT id, title FROM roles';
         const managerSql = 'SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL';
@@ -252,9 +245,8 @@ class Application{
         });
     }
 
-    //WHEN I choose to update an employee role
-    //THEN I am prompted to select an employee to update and their new role and this information is updated in the database
-    updateEmployeeRole(){
+    //Prompt user to select an employee to update and their new role and this information is updated in the database
+    promptUpdateEmployeeRole(){
         const rolesSql = 'SELECT id, title FROM roles';
         const employeesSql = 'SELECT id, first_name, last_name FROM employees' 
         let rolesArray = [];
@@ -310,10 +302,52 @@ class Application{
         });
     }
 
-    // WHEN I choose to add a role
-    // THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
-    addNewRole(){
+    //Prompt user to enter the name, salary, and department for the role and that role is added to the database
+    promptAddRole(){
+        const sql = `SELECT * FROM departments`
 
+        this.db.promise().query(sql)
+        .then(([rows]) => {
+            const departments = rows.map(department => {
+                return {name: department.name, value: department.id}
+            })
+
+            return inquirer.prompt([
+                {
+                    type: "input",
+                    name: "name",
+                    message: "Enter the name of the new role:"
+                },
+                {
+                    type: "number",
+                    name: "salary",
+                    message: "Prescribe a salary to the role:"
+                },
+                {
+                    type: "list",
+                    name: "department",
+                    message: "Select a role to assign:",
+                    choices: departments
+                }
+            ]);
+        })
+        .then(({name, salary, department}) => {
+            const sql = "INSERT INTO roles (title, salary, department_id) VALUES (?,?,?)";
+            const param = [name, salary, department];
+
+            return this.db.promise().query(sql, param);
+        })
+        .then(result => {
+            console.log("\nRole added successfully\n");
+
+            //Run application after the department query
+            this.runApplication();
+        })
+        .catch( err => {
+            //catch the error, display the error message and restart the loop
+            console.log(`\nError: ${err.message}\n`);
+            this.runApplication();
+        });
     }
 }
 
