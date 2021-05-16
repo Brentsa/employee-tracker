@@ -4,12 +4,12 @@ DROP TABLE IF EXISTS departments;
 
 CREATE TABLE departments (
     id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    name VARCHAR(30) NOT NULL
+    name VARCHAR(30) NOT NULL UNIQUE
 );
 
 CREATE TABLE roles (
     id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    title VARCHAR(30) NOT NULL,
+    title VARCHAR(30) NOT NULL UNIQUE,
     salary DECIMAL(10,2) NOT NULL,
     department_id INT NOT NULL,
     CONSTRAINT fk_department FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE CASCADE
