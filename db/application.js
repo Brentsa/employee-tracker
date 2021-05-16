@@ -70,7 +70,7 @@ class Application{
     //Present user with a formatted table showing department names and department ids
     displayAllDepartments()
     {
-        const sql = "SELECT name FROM departments";
+        const sql = "SELECT * FROM departments ORDER BY id";
         
         this.db.promise().query(sql)
         .then( ([rows]) => {
@@ -92,9 +92,10 @@ class Application{
     //Present user with the job title, role id, the department that role belongs to, and the salary for that role
     displayAllRoles()
     {
-        const sql =`SELECT roles.title, roles.salary, departments.name AS department
+        const sql =`SELECT roles.id, roles.title, roles.salary, departments.name AS department
                     FROM roles
-                    JOIN departments ON roles.department_id = departments.id`;
+                    JOIN departments ON roles.department_id = departments.id
+                    ORDER BY roles.id`;
                 
         this.db.promise().query(sql)
         .then( ([rows]) => {
