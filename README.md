@@ -18,8 +18,12 @@ Employee Tracker is a command line application that allows the user to view and 
 2. Create a “.env” file in the root folder of the app.
 3. In the “.env” file, assign variables DB_HOST, DB_USER, DB_PASS with your MySQL host name, username, and password.
 4. Navigate to the root folder of the application in your command line app and enter “npm install” to download the dependencies
-5. From the root directory enter “source db/db.sql” to initialize your database.
-6. The database is now initialized and you can begin adding departments, roles, and employees
+5. From the root directory
+6. Enter “source db/db.sql” to initialize your database.
+7. Enter “source db/schema.sql” to initialize your tables.
+8. Optional: Load your own data into db/seeds.sql to start the database with information. Enter “source db/seeds.sql” to insert data into the tables.
+9. Leave the MySQL directory by entering "quit"
+10. The Application is now initialized and you can begin adding departments, roles, and employees.
 
 ## Usage
 [WALKTHROUGH VIDEO](https://drive.google.com/file/d/1vODAYXJmax7L81up8di6MOWsRac8ftnc/view)
